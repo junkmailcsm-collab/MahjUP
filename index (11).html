@@ -1,0 +1,977 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MahjUp</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: #F5F2EC;
+      font-family: 'DM Sans', sans-serif;
+      color: #1A1814;
+      min-height: 100vh;
+    }
+
+    ::placeholder { color: #B0AA9E; }
+
+    /* Nav */
+    #nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 2rem;
+      height: 64px;
+      background: #1A1814;
+      position: sticky;
+      top: 0;
+      z-index: 200;
+    }
+    #nav .logo {
+      font-family: 'DM Serif Display', serif;
+      font-size: 1.5rem;
+      color: #F5F2EC;
+      letter-spacing: -0.02em;
+      cursor: pointer;
+      user-select: none;
+    }
+    #nav .logo span { color: #E8714A; }
+
+    /* Buttons */
+    .btn-primary {
+      padding: 10px 22px;
+      background: #C94F2E;
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 14px;
+      font-family: 'DM Sans', sans-serif;
+      cursor: pointer;
+      transition: opacity 0.15s, transform 0.1s;
+    }
+    .btn-primary:hover { opacity: 0.88; }
+    .btn-primary:active { transform: scale(0.97); }
+    .btn-primary:disabled { opacity: 0.45; cursor: not-allowed; }
+
+    .btn-outline {
+      padding: 9px 20px;
+      background: transparent;
+      color: #F5F2EC;
+      border: 1.5px solid rgba(245,242,236,0.3);
+      border-radius: 8px;
+      font-weight: 500;
+      font-size: 14px;
+      font-family: 'DM Sans', sans-serif;
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+    .btn-outline:hover { background: rgba(255,255,255,0.07); }
+
+    .btn-ghost {
+      padding: 8px 16px;
+      background: transparent;
+      color: #7A7670;
+      border: 1.5px solid #D9D4CA;
+      border-radius: 8px;
+      font-weight: 500;
+      font-size: 13px;
+      font-family: 'DM Sans', sans-serif;
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+    .btn-ghost:hover { background: #F0EBE2; }
+
+    .btn-danger {
+      padding: 8px 14px;
+      background: transparent;
+      color: #C94F2E;
+      border: 1.5px solid rgba(201,79,46,0.35);
+      border-radius: 8px;
+      font-weight: 500;
+      font-size: 13px;
+      font-family: 'DM Sans', sans-serif;
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+    .btn-danger:hover { background: #FEF2EE; }
+
+    /* Inputs */
+    input[type="text"], input[type="email"], input[type="date"],
+    input[type="time"], input[type="password"] {
+      width: 100%;
+      padding: 10px 14px;
+      border: 1.5px solid #D9D4CA;
+      border-radius: 8px;
+      background: #FDFAF6;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 15px;
+      color: #1A1814;
+      outline: none;
+      transition: border-color 0.15s, box-shadow 0.15s;
+    }
+    input:focus {
+      border-color: #C94F2E;
+      box-shadow: 0 0 0 3px rgba(201,79,46,0.1);
+    }
+
+    /* Cards */
+    .card {
+      background: #fff;
+      border: 1px solid #E8E3DA;
+      border-radius: 14px;
+      padding: 1.4rem 1.6rem;
+    }
+
+    /* Form labels */
+    .field-label {
+      display: block;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #7A7670;
+      margin-bottom: 6px;
+    }
+    .field-error {
+      font-size: 12px;
+      color: #C94F2E;
+      margin-top: 4px;
+    }
+
+    /* Section label */
+    .section-label {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: #B0AA9E;
+      margin-bottom: 12px;
+    }
+
+    /* Pill badges */
+    .pill-full {
+      display: inline-block;
+      padding: 3px 10px;
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      background: #FEF2EE;
+      color: #C94F2E;
+      border: 1px solid rgba(201,79,46,0.25);
+    }
+    .pill-open {
+      display: inline-block;
+      padding: 3px 10px;
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      background: #EEF7EF;
+      color: #2E7D32;
+      border: 1px solid rgba(46,125,50,0.2);
+    }
+
+    /* Reminder box */
+    .reminder-box {
+      background: #FFFBF5;
+      border: 1px solid #EDDFCC;
+      border-radius: 10px;
+      padding: 12px 14px;
+      display: flex;
+      gap: 12px;
+      align-items: flex-start;
+      margin-top: 16px;
+    }
+    .reminder-box .bell { font-size: 18px; flex-shrink: 0; margin-top: 1px; }
+    .reminder-box p { font-size: 12px; color: #7A7670; line-height: 1.5; }
+    .reminder-box strong { color: #1A1814; }
+
+    /* Toast */
+    #toast {
+      position: fixed;
+      bottom: 28px;
+      right: 28px;
+      background: #1A1814;
+      color: #F5F2EC;
+      padding: 12px 20px;
+      border-radius: 10px;
+      font-size: 14px;
+      font-weight: 500;
+      z-index: 999;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.18);
+      display: none;
+      animation: toastIn 0.25s ease;
+      max-width: 320px;
+    }
+
+    /* Slot rows */
+    .slot-row {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 12px 14px;
+      border-radius: 10px;
+      border: 1.5px solid #E8E3DA;
+      background: #fff;
+      cursor: pointer;
+      margin-bottom: 8px;
+      transition: all 0.12s;
+    }
+    .slot-row.selected {
+      border: 2px solid #C94F2E;
+      background: #FEF5F2;
+    }
+    .slot-row.taken {
+      opacity: 0.6;
+      cursor: not-allowed;
+      background: #FDFAF6;
+    }
+    .slot-radio {
+      width: 18px; height: 18px;
+      border-radius: 50%;
+      border: 2px solid #D9D4CA;
+      background: transparent;
+      flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center;
+      transition: all 0.12s;
+    }
+    .slot-row.selected .slot-radio {
+      background: #C94F2E;
+      border-color: #C94F2E;
+    }
+    .slot-radio-dot {
+      display: none;
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: #fff;
+    }
+    .slot-row.selected .slot-radio-dot { display: block; }
+
+    /* Admin slot grid */
+    .slot-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+      gap: 8px;
+      margin-top: 14px;
+    }
+    .slot-cell {
+      padding: 10px 12px;
+      border-radius: 8px;
+      background: #FDFAF6;
+      border: 1px solid #EDE9E3;
+    }
+    .slot-cell.filled {
+      background: #EEF7EF;
+      border-color: rgba(46,125,50,0.2);
+    }
+    .slot-cell-label {
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+      color: #B0AA9E;
+      margin-bottom: 3px;
+    }
+    .slot-cell-name { font-weight: 600; font-size: 13px; }
+    .slot-cell-email { font-size: 11px; color: #2E7D32; }
+    .slot-cell-empty { font-size: 12px; color: #B0AA9E; font-style: italic; }
+
+    /* Animations */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(12px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes pop {
+      0%   { transform: scale(0.8); opacity: 0; }
+      70%  { transform: scale(1.08); }
+      100% { transform: scale(1); opacity: 1; }
+    }
+    @keyframes toastIn {
+      from { opacity: 0; transform: translateX(24px); }
+      to   { opacity: 1; transform: translateX(0); }
+    }
+
+    .fade-up { animation: fadeUp 0.3s ease both; }
+
+    /* Layout helpers */
+    .page-wrap { max-width: 780px; margin: 0 auto; padding: 2.5rem 1.5rem; }
+    .page-wrap-sm { max-width: 560px; margin: 0 auto; padding: 2.5rem 1.5rem; }
+    .page-wrap-xs { max-width: 420px; margin: 0 auto; padding: 0 1.5rem; margin-top: 5rem; }
+    .grid-gap { display: grid; gap: 12px; }
+    .flex-between { display: flex; justify-content: space-between; align-items: center; }
+    .flex-gap { display: flex; gap: 10px; align-items: center; }
+    .divider { border: none; border-top: 1px solid #F0EBE2; margin: 1.25rem 0; }
+
+    /* Hero */
+    #hero {
+      background: #1A1814;
+      padding: 5rem 2rem 4rem;
+      text-align: center;
+    }
+    #hero .eyebrow {
+      display: inline-block;
+      background: rgba(232,113,74,0.15);
+      color: #E8714A;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      padding: 5px 14px;
+      border-radius: 20px;
+      border: 1px solid rgba(232,113,74,0.3);
+      margin-bottom: 24px;
+    }
+    #hero h1 {
+      font-family: 'DM Serif Display', serif;
+      font-size: clamp(2.4rem, 6vw, 3.8rem);
+      color: #F5F2EC;
+      line-height: 1.1;
+      letter-spacing: -0.03em;
+      margin-bottom: 16px;
+    }
+    #hero h1 em { color: #E8714A; font-style: italic; }
+    #hero p {
+      color: #7A7670;
+      font-size: 16px;
+      max-width: 420px;
+      margin: 0 auto 2rem;
+      line-height: 1.6;
+    }
+
+    /* Sheet card on home */
+    .sheet-card {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+    .date-block {
+      min-width: 54px;
+      text-align: center;
+      background: #F5F2EC;
+      border-radius: 10px;
+      padding: 10px 6px;
+      flex-shrink: 0;
+    }
+    .date-block .month {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #C94F2E;
+    }
+    .date-block .day {
+      font-family: 'DM Serif Display', serif;
+      font-size: 1.7rem;
+      line-height: 1;
+      color: #1A1814;
+    }
+    .sheet-info { flex: 1; min-width: 0; }
+    .sheet-title {
+      font-weight: 600;
+      font-size: 16px;
+      margin-bottom: 3px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .sheet-meta { color: #7A7670; font-size: 13px; display: flex; gap: 14px; flex-wrap: wrap; }
+    .slots-left { text-align: center; flex-shrink: 0; min-width: 56px; }
+    .slots-left .num {
+      font-family: 'DM Serif Display', serif;
+      font-size: 1.8rem;
+      line-height: 1;
+    }
+    .slots-left .lbl {
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: #B0AA9E;
+      font-weight: 600;
+    }
+
+    /* Success check */
+    .check-circle {
+      width: 64px; height: 64px;
+      border-radius: 50%;
+      background: #EEF7EF;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 28px;
+      margin: 0 auto 1rem;
+      animation: pop 0.4s ease;
+    }
+
+    /* Responsive */
+    @media (max-width: 520px) {
+      #nav { padding: 0 1rem; }
+      .page-wrap, .page-wrap-sm { padding: 1.5rem 1rem; }
+      .sheet-card { flex-wrap: wrap; gap: 12px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav id="nav">
+  <div class="logo" onclick="showView('home')">Mahj<span>Up</span></div>
+  <div id="nav-right"></div>
+</nav>
+
+<!-- VIEWS -->
+<div id="view-home" style="display:none"></div>
+<div id="view-admin-login" style="display:none"></div>
+<div id="view-admin" style="display:none"></div>
+<div id="view-signup" style="display:none"></div>
+
+<!-- TOAST -->
+<div id="toast"></div>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-app.js";
+  import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-analytics.js";
+  import {
+    getFirestore, collection, doc, addDoc, updateDoc,
+    deleteDoc, onSnapshot, serverTimestamp, orderBy, query
+  } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-firestore.js";
+
+  // ── Firebase config ────────────────────────────────────────
+  const firebaseConfig = {
+    apiKey:            "AIzaSyBS1WvXZXFbk11TGLgI-1kVZj2OjecKf5w",
+    authDomain:        "mahjup-cc878.firebaseapp.com",
+    projectId:         "mahjup-cc878",
+    storageBucket:     "mahjup-cc878.firebasestorage.app",
+    messagingSenderId: "255603910202",
+    appId:             "1:255603910202:web:7cadd0a1cfd7d6ea493703",
+    measurementId:     "G-V41LVB76G4",
+  };
+
+  const app  = initializeApp(firebaseConfig);
+  const analytics = getAnalytics(app);
+  const db   = getFirestore(app);
+
+  // ── State ──────────────────────────────────────────────────
+  const ADMIN_PASSWORD = "changeme123"; // ← change this!
+  let tables      = [];
+  let loading     = true;
+  let adminAuth   = false;
+  let currentView = "home";
+  let selectedTableId = null;
+
+  // ── Helpers ────────────────────────────────────────────────
+  function makeSlots() {
+    return [
+      { id:"s1", label:"Slot 1", name:"", email:"", signedUp:false },
+      { id:"s2", label:"Slot 2", name:"", email:"", signedUp:false },
+      { id:"s3", label:"Slot 3", name:"", email:"", signedUp:false },
+      { id:"s4", label:"Slot 4", name:"", email:"", signedUp:false },
+    ];
+  }
+
+  function fmtDate(date, time) {
+    if (!date || !time) return "";
+    return new Date(`${date}T${time}`).toLocaleString("en-US", {
+      weekday:"short", month:"short", day:"numeric",
+      year:"numeric", hour:"numeric", minute:"2-digit", hour12:true
+    });
+  }
+
+  function fmtReminder(date, time) {
+    if (!date || !time) return "";
+    const d = new Date(`${date}T${time}`);
+    d.setHours(d.getHours() - 12);
+    return d.toLocaleString("en-US", {
+      weekday:"short", month:"short", day:"numeric",
+      hour:"numeric", minute:"2-digit", hour12:true
+    });
+  }
+
+  function slotsLeft(t) { return t.slots.filter(s => !s.signedUp).length; }
+
+  function getMonthShort(dateStr) {
+    if (!dateStr) return "—";
+    return new Date(`${dateStr}T12:00`).toLocaleString("en-US", { month:"short" });
+  }
+  function getDayNum(dateStr) {
+    if (!dateStr) return "—";
+    return new Date(`${dateStr}T12:00`).getDate();
+  }
+
+  function esc(str) {
+    return String(str)
+      .replace(/&/g,"&amp;").replace(/</g,"&lt;")
+      .replace(/>/g,"&gt;").replace(/"/g,"&quot;");
+  }
+
+  let toastTimer;
+  function showToast(msg) {
+    const el = document.getElementById("toast");
+    el.textContent = msg;
+    el.style.display = "block";
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => { el.style.display = "none"; }, 3000);
+  }
+
+  // ── Firestore live listener ────────────────────────────────
+  const q = query(collection(db, "sheets"), orderBy("createdAt", "desc"));
+  onSnapshot(q, snap => {
+    tables  = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+    loading = false;
+    rerenderCurrentView();
+  });
+
+  // ── View router ────────────────────────────────────────────
+  function showView(name) {
+    currentView = name;
+    ["home","admin-login","admin","signup"].forEach(v => {
+      document.getElementById(`view-${v}`).style.display = "none";
+    });
+    document.getElementById(`view-${name}`).style.display = "block";
+    renderNavRight();
+    if (name === "home")        renderHome();
+    if (name === "admin-login") renderAdminLogin();
+    if (name === "admin")       renderAdmin();
+    if (name === "signup")      renderSignup();
+    window.scrollTo(0, 0);
+  }
+
+  function rerenderCurrentView() {
+    if (currentView === "home")  renderHome();
+    if (currentView === "admin") renderAdmin();
+    if (currentView === "signup") renderSignup();
+  }
+
+  // ── Nav right ──────────────────────────────────────────────
+  function renderNavRight() {
+    const el = document.getElementById("nav-right");
+    if (currentView === "admin") {
+      el.innerHTML = `<button class="btn-ghost" style="color:#F5F2EC;border-color:rgba(245,242,236,0.3)" onclick="doLogout()">Logout</button>`;
+    } else {
+      el.innerHTML = `<button class="btn-outline" onclick="navToAdmin()">${adminAuth ? "Dashboard" : "Admin"}</button>`;
+    }
+  }
+
+  window.navToAdmin = () => showView(adminAuth ? "admin" : "admin-login");
+  window.doLogout   = () => { adminAuth = false; showView("home"); };
+
+  // ══════════════════════════════════════════════════════════
+  //  HOME
+  // ══════════════════════════════════════════════════════════
+  function renderHome() {
+    const el = document.getElementById("view-home");
+    let sheetsHtml = "";
+
+    if (loading) {
+      sheetsHtml = `<div style="text-align:center;color:#B0AA9E;padding:3rem 0">Loading…</div>`;
+    } else if (tables.length === 0) {
+      sheetsHtml = `
+        <div class="card" style="text-align:center;padding:4rem 2rem;color:#B0AA9E">
+          <div style="font-family:'DM Serif Display',serif;font-size:2rem;color:#D9D4CA;margin-bottom:10px">Nothing yet</div>
+          Ask an organiser to create a signup sheet.
+        </div>`;
+    } else {
+      sheetsHtml = `<div class="section-label">Open Sheets</div><div class="grid-gap">`;
+      tables.forEach(t => {
+        const left   = slotsLeft(t);
+        const isFull = left === 0;
+        sheetsHtml += `
+          <div class="card sheet-card fade-up">
+            <div class="date-block">
+              <div class="month">${esc(getMonthShort(t.date))}</div>
+              <div class="day">${esc(getDayNum(t.date))}</div>
+            </div>
+            <div class="sheet-info">
+              <div class="sheet-title">${esc(t.title)}</div>
+              <div class="sheet-meta">
+                <span>📍 ${esc(t.location)}</span>
+                <span>🕐 ${esc(t.time)}</span>
+              </div>
+            </div>
+            <div class="slots-left">
+              <div class="num" style="color:${isFull ? "#C94F2E" : "#2E7D32"}">${left}</div>
+              <div class="lbl">left</div>
+            </div>
+            <button class="btn-primary" ${isFull ? "disabled" : ""} onclick="openSignup('${esc(t.id)}')">
+              ${isFull ? "Full" : "Sign Up"}
+            </button>
+          </div>`;
+      });
+      sheetsHtml += `</div>`;
+    }
+
+    el.innerHTML = `
+      <div id="hero">
+        <div class="eyebrow">Event Signups, Simplified</div>
+        <h1>Grab your spot.<br><em>We'll remind you.</em></h1>
+        <p>Sign up for a slot. We'll send you a reminder 12 hours before so you never miss a thing.</p>
+        <button class="btn-outline" onclick="navToAdmin()">Admin →</button>
+      </div>
+      <div class="page-wrap">${sheetsHtml}</div>`;
+  }
+
+  window.openSignup = (id) => {
+    selectedTableId = id;
+    showView("signup");
+  };
+
+  // ══════════════════════════════════════════════════════════
+  //  SIGNUP
+  // ══════════════════════════════════════════════════════════
+  let selectedSlotId = null;
+
+  function renderSignup(successData) {
+    const el   = document.getElementById("view-signup");
+    const table = tables.find(t => t.id === selectedTableId);
+    if (!table) { showView("home"); return; }
+
+    if (successData) {
+      el.innerHTML = `
+        <div class="page-wrap-sm" style="margin-top:0;padding-top:2.5rem">
+          <div class="card fade-up" style="text-align:center;padding:2.5rem">
+            <div class="check-circle">✓</div>
+            <div style="font-family:'DM Serif Display',serif;font-size:1.6rem;margin-bottom:6px">
+              You're in, ${esc(successData.name.split(" ")[0])}!
+            </div>
+            <div style="color:#7A7670;font-size:14px;margin-bottom:1.5rem">
+              Spot confirmed for <strong style="color:#1A1814">${esc(table.title)}</strong>
+            </div>
+            <div class="reminder-box">
+              <span class="bell">🔔</span>
+              <p>
+                We'll email <strong>${esc(successData.email)}</strong> on
+                <strong>${fmtReminder(table.date, table.time)}</strong> — 12 hrs before the event.
+              </p>
+            </div>
+            <button class="btn-primary" style="width:100%;padding:13px;margin-top:1.5rem;font-size:15px"
+              onclick="showView('home')">Back to all sheets</button>
+          </div>
+        </div>`;
+      return;
+    }
+
+    selectedSlotId = null;
+    let slotsHtml = "";
+    table.slots.forEach(s => {
+      const taken = s.signedUp;
+      slotsHtml += `
+        <div class="slot-row${taken ? " taken" : ""}" id="slotrow-${s.id}"
+          ${taken ? "" : `onclick="selectSlot('${s.id}')"`}>
+          <div class="slot-radio" id="slotradio-${s.id}">
+            <div class="slot-radio-dot"></div>
+          </div>
+          <div style="flex:1">
+            <span style="font-weight:600;font-size:14px">${esc(s.label)}</span>
+            ${taken
+              ? `<span style="margin-left:10px;font-size:12px;color:#C94F2E">Taken</span>`
+              : `<span style="margin-left:10px;font-size:12px;color:#2E7D32">Open</span>`}
+          </div>
+        </div>`;
+    });
+
+    el.innerHTML = `
+      <div class="page-wrap-sm">
+        <button class="btn-ghost" style="margin-bottom:20px" onclick="showView('home')">← All sheets</button>
+        <div style="margin-bottom:1.75rem">
+          <h2 style="font-family:'DM Serif Display',serif;font-size:1.8rem;letter-spacing:-0.02em;margin-bottom:6px">
+            ${esc(table.title)}
+          </h2>
+          <div style="color:#7A7670;font-size:13px;display:flex;gap:16px;flex-wrap:wrap">
+            <span>📍 ${esc(table.location)}</span>
+            <span>🗓 ${fmtDate(table.date, table.time)}</span>
+          </div>
+        </div>
+        <div class="card">
+          <div class="section-label">Pick your slot</div>
+          <div id="slot-err" class="field-error" style="margin-bottom:8px;display:none">Please pick a slot</div>
+          ${slotsHtml}
+          <hr class="divider">
+          <div class="section-label">Your info</div>
+          <div style="display:grid;gap:14px">
+            <div>
+              <label class="field-label">Name</label>
+              <input type="text" id="su-name" placeholder="Jane Smith">
+              <div class="field-error" id="name-err" style="display:none">Required</div>
+            </div>
+            <div>
+              <label class="field-label">Email</label>
+              <input type="email" id="su-email" placeholder="jane@example.com">
+              <div class="field-error" id="email-err" style="display:none">Required — must be a valid email</div>
+            </div>
+          </div>
+          <div class="reminder-box">
+            <span class="bell">🔔</span>
+            <p>Reminder email will be sent on
+              <strong>${fmtReminder(table.date, table.time)}</strong> — 12 hours before the event.
+            </p>
+          </div>
+          <button class="btn-primary" id="su-btn" style="width:100%;padding:13px;margin-top:1.25rem;font-size:15px"
+            onclick="submitSignup()">Confirm My Spot →</button>
+        </div>
+      </div>`;
+  }
+
+  window.selectSlot = (id) => {
+    // deselect previous
+    if (selectedSlotId) {
+      document.getElementById(`slotrow-${selectedSlotId}`)?.classList.remove("selected");
+    }
+    selectedSlotId = id;
+    document.getElementById(`slotrow-${id}`)?.classList.add("selected");
+    document.getElementById("slot-err").style.display = "none";
+  };
+
+  window.submitSignup = async () => {
+    let valid = true;
+    const slotErr  = document.getElementById("slot-err");
+    const nameErr  = document.getElementById("name-err");
+    const emailErr = document.getElementById("email-err");
+    const name     = document.getElementById("su-name").value.trim();
+    const email    = document.getElementById("su-email").value.trim();
+
+    slotErr.style.display  = "none";
+    nameErr.style.display  = "none";
+    emailErr.style.display = "none";
+
+    if (!selectedSlotId) { slotErr.style.display = "block"; valid = false; }
+    if (!name)           { nameErr.style.display = "block"; valid = false; }
+    if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      emailErr.style.display = "block"; valid = false;
+    }
+    if (!valid) return;
+
+    const btn = document.getElementById("su-btn");
+    btn.disabled = true;
+    btn.textContent = "Saving…";
+
+    const table = tables.find(t => t.id === selectedTableId);
+    const updatedSlots = table.slots.map(s =>
+      s.id === selectedSlotId ? { ...s, name, email, signedUp: true } : s
+    );
+
+    try {
+      // Update sheet slot
+      await updateDoc(doc(db, "sheets", selectedTableId), { slots: updatedSlots });
+
+      // Write reminder record for Cloud Function
+      const eventDt = new Date(`${table.date}T${table.time}`);
+      const sendAt  = new Date(eventDt.getTime() - 12 * 60 * 60 * 1000);
+      await addDoc(collection(db, "reminders"), {
+        email, name,
+        eventTitle:    table.title,
+        eventLocation: table.location,
+        eventDate:     table.date,
+        eventTime:     table.time,
+        sendAt:        sendAt.toISOString(),
+        sent:          false,
+        createdAt:     serverTimestamp(),
+      });
+
+      renderSignup({ name, email });
+    } catch (err) {
+      console.error(err);
+      btn.disabled = false;
+      btn.textContent = "Confirm My Spot →";
+      showToast("Something went wrong. Please try again.");
+    }
+  };
+
+  // ══════════════════════════════════════════════════════════
+  //  ADMIN LOGIN
+  // ══════════════════════════════════════════════════════════
+  function renderAdminLogin() {
+    const el = document.getElementById("view-admin-login");
+    el.innerHTML = `
+      <div class="page-wrap-xs">
+        <button class="btn-ghost" style="margin-bottom:20px" onclick="showView('home')">← Back</button>
+        <div class="card fade-up">
+          <div style="font-family:'DM Serif Display',serif;font-size:1.6rem;margin-bottom:6px">Admin Login</div>
+          <div style="color:#7A7670;font-size:13px;margin-bottom:1.5rem">
+            Enter your admin password to manage signup sheets.
+          </div>
+          <label class="field-label">Password</label>
+          <input type="password" id="admin-pw" placeholder="••••••••"
+            onkeydown="if(event.key==='Enter')doAdminLogin()">
+          <div class="field-error" id="pw-err" style="display:none">Incorrect password.</div>
+          <button class="btn-primary" style="width:100%;padding:12px;margin-top:16px" onclick="doAdminLogin()">
+            Login →
+          </button>
+        </div>
+      </div>`;
+  }
+
+  window.doAdminLogin = () => {
+    const pw = document.getElementById("admin-pw").value;
+    if (pw === ADMIN_PASSWORD) {
+      adminAuth = true;
+      showView("admin");
+    } else {
+      document.getElementById("pw-err").style.display = "block";
+    }
+  };
+
+  // ══════════════════════════════════════════════════════════
+  //  ADMIN DASHBOARD
+  // ══════════════════════════════════════════════════════════
+  let creatingSheet = false;
+  let confirmDelId  = null;
+
+  function renderAdmin() {
+    const el = document.getElementById("view-admin");
+
+    let createFormHtml = "";
+    if (creatingSheet) {
+      createFormHtml = `
+        <div class="card fade-up" style="margin-bottom:1.5rem;border-color:#C94F2E">
+          <div style="font-weight:600;font-size:15px;margin-bottom:1rem">New Signup Sheet</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
+            <div style="grid-column:1/-1">
+              <label class="field-label">Event Title</label>
+              <input type="text" id="nt-title" placeholder="Community Cleanup Day">
+              <div class="field-error" id="nt-title-err" style="display:none">Required</div>
+            </div>
+            <div style="grid-column:1/-1">
+              <label class="field-label">Location</label>
+              <input type="text" id="nt-loc" placeholder="Riverside Park, East Entrance">
+              <div class="field-error" id="nt-loc-err" style="display:none">Required</div>
+            </div>
+            <div>
+              <label class="field-label">Date</label>
+              <input type="date" id="nt-date">
+              <div class="field-error" id="nt-date-err" style="display:none">Required</div>
+            </div>
+            <div>
+              <label class="field-label">Time</label>
+              <input type="time" id="nt-time">
+              <div class="field-error" id="nt-time-err" style="display:none">Required</div>
+            </div>
+          </div>
+          <div style="display:flex;gap:10px;margin-top:16px">
+            <button class="btn-primary" id="create-btn" onclick="submitCreate()">Create Sheet</button>
+            <button class="btn-ghost" onclick="cancelCreate()">Cancel</button>
+          </div>
+        </div>`;
+    }
+
+    let sheetsHtml = "";
+    if (loading) {
+      sheetsHtml = `<div style="color:#B0AA9E;padding:3rem 0;text-align:center">Loading…</div>`;
+    } else if (tables.length === 0) {
+      sheetsHtml = `<div class="card" style="text-align:center;padding:3rem;color:#B0AA9E">No sheets yet. Create one above!</div>`;
+    } else {
+      sheetsHtml = `<div class="grid-gap">`;
+      tables.forEach(t => {
+        const takenCount = t.slots.filter(s => s.signedUp).length;
+        const isFull     = takenCount === 4;
+        const pillClass  = isFull ? "pill-full" : "pill-open";
+        const delBtns = confirmDelId === t.id
+          ? `<button class="btn-danger" onclick="confirmDelete('${t.id}')">Confirm</button>
+             <button class="btn-ghost" onclick="cancelDelete()">Cancel</button>`
+          : `<button class="btn-danger" onclick="askDelete('${t.id}')">Delete</button>`;
+
+        let slotsHtml2 = `<div class="slot-grid">`;
+        t.slots.forEach(s => {
+          slotsHtml2 += `
+            <div class="slot-cell${s.signedUp ? " filled" : ""}">
+              <div class="slot-cell-label">${esc(s.label)}</div>
+              ${s.signedUp
+                ? `<div class="slot-cell-name">${esc(s.name)}</div>
+                   <div class="slot-cell-email">${esc(s.email)}</div>`
+                : `<div class="slot-cell-empty">Empty</div>`}
+            </div>`;
+        });
+        slotsHtml2 += `</div>`;
+
+        sheetsHtml += `
+          <div class="card fade-up">
+            <div class="flex-between" style="margin-bottom:0;gap:12px;align-items:flex-start">
+              <div>
+                <div style="font-weight:600;font-size:15px">${esc(t.title)}</div>
+                <div style="color:#7A7670;font-size:12px;margin-top:2px">
+                  📍 ${esc(t.location)} · 🗓 ${fmtDate(t.date, t.time)}
+                </div>
+              </div>
+              <div class="flex-gap" style="flex-shrink:0">
+                <span class="${pillClass}">${takenCount}/4 filled</span>
+                ${delBtns}
+              </div>
+            </div>
+            ${slotsHtml2}
+          </div>`;
+      });
+      sheetsHtml += `</div>`;
+    }
+
+    el.innerHTML = `
+      <div style="max-width:860px;margin:0 auto;padding:2.5rem 1.5rem">
+        <div class="flex-between" style="margin-bottom:2rem">
+          <div>
+            <h2 style="font-family:'DM Serif Display',serif;font-size:1.8rem;letter-spacing:-0.02em">
+              Signup Sheets
+            </h2>
+            <div style="color:#B0AA9E;font-size:13px">${tables.length} sheet${tables.length !== 1 ? "s" : ""}</div>
+          </div>
+          <div class="flex-gap">
+            <button class="btn-ghost" onclick="doLogout()">Logout</button>
+            <button class="btn-primary" onclick="startCreate()">+ New Sheet</button>
+          </div>
+        </div>
+        ${createFormHtml}
+        ${sheetsHtml}
+      </div>`;
+  }
+
+  window.startCreate  = () => { creatingSheet = true;  renderAdmin(); };
+  window.cancelCreate = () => { creatingSheet = false; renderAdmin(); };
+  window.askDelete    = (id) => { confirmDelId = id;   renderAdmin(); };
+  window.cancelDelete = () => { confirmDelId = null;   renderAdmin(); };
+
+  window.confirmDelete = async (id) => {
+    await deleteDoc(doc(db, "sheets", id));
+    confirmDelId = null;
+    showToast("Sheet deleted.");
+  };
+
+  window.submitCreate = async () => {
+    const title = document.getElementById("nt-title").value.trim();
+    const loc   = document.getElementById("nt-loc").value.trim();
+    const date  = document.getElementById("nt-date").value;
+    const time  = document.getElementById("nt-time").value;
+    let valid = true;
+
+    ["nt-title-err","nt-loc-err","nt-date-err","nt-time-err"].forEach(id => {
+      document.getElementById(id).style.display = "none";
+    });
+
+    if (!title) { document.getElementById("nt-title-err").style.display = "block"; valid = false; }
+    if (!loc)   { document.getElementById("nt-loc-err").style.display   = "block"; valid = false; }
+    if (!date)  { document.getElementById("nt-date-err").style.display  = "block"; valid = false; }
+    if (!time)  { document.getElementById("nt-time-err").style.display  = "block"; valid = false; }
+    if (!valid) return;
+
+    const btn = document.getElementById("create-btn");
+    btn.disabled = true; btn.textContent = "Creating…";
+
+    try {
+      await addDoc(collection(db, "sheets"), {
+        title, location: loc, date, time,
+        slots: makeSlots(),
+        createdAt: serverTimestamp(),
+      });
+      creatingSheet = false;
+      showToast("Sheet created!");
+    } catch (e) {
+      console.error(e);
+      btn.disabled = false; btn.textContent = "Create Sheet";
+      showToast("Error creating sheet.");
+    }
+  };
+
+  // ── Kick off ───────────────────────────────────────────────
+  showView("home");
+</script>
+</body>
+</html>
